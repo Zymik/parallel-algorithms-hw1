@@ -4,20 +4,18 @@ import kotlin.random.Random
 
 fun IntArray.seqQuickSort() = seqQuicksort(this, 0, size - 1)
 
-suspend fun IntArray.parQuickSort() = parQuickSort(this, 0, size - 1)
+suspend fun IntArray.parQuickSort(blockSize: Int = 2500) = parQuickSort(this, 0, size - 1, blockSize)
 
-const val BLOCK_SIZE = 2500
-
-suspend fun parQuickSort(array: IntArray, l: Int, r: Int) {
-    if (r - l < BLOCK_SIZE) {
+suspend fun parQuickSort(array: IntArray, l: Int, r: Int, blockSize: Int) {
+    if (r - l < blockSize) {
         seqQuicksort(array, l, r)
         return
     }
     val q = partition(array, l, r)
 
     coroutineScope {
-        launch { parQuickSort(array, l, q) }
-        launch { parQuickSort(array, q + 1, r) }
+        launch { parQuickSort(array, l, q, blockSize) }
+        launch { parQuickSort(array, q + 1, r, blockSize) }
     }
 }
 

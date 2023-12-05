@@ -28,7 +28,7 @@ class CorrectnessTest {
         val sorted = array.sorted().toIntArray()
         runBlocking {
             launch {
-                array.parQuickSort()
+                array.parQuickSort(10)
             }
         }
         array.contentEquals(sorted)
